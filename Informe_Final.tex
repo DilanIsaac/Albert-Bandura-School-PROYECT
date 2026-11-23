@@ -1,0 +1,204 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{graphicx,booktabs,array,longtable,float,xcolor,enumitem,listings,hyperref,fancyhdr}
+\usepackage{microtype}
+\definecolor{school}{HTML}{25474D}
+\definecolor{accent}{HTML}{A66642}
+\hypersetup{colorlinks=true,linkcolor=school,urlcolor=school,pdftitle={Albert Bandura School Final Project}}
+\pagestyle{fancy}\fancyhf{}\lhead{\small Albert Bandura School}\rhead{\small Final Database Project}\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+\setlength{\parskip}{5pt}\setlength{\parindent}{0pt}
+\renewcommand{\arraystretch}{1.18}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,frame=single,rulecolor=\color{black!15},backgroundcolor=\color{black!3},showstringspaces=false}
+\newcommand{\todoitem}{\textbf{Pending local verification}}
+\newcommand{\fig}[3]{\begin{figure}[H]\centering\includegraphics[width=#2\linewidth,height=7cm,keepaspectratio]{#1}\caption{#3}\end{figure}}
+\begin{document}
+\begin{titlepage}
+\vspace*{1.7cm}
+{\color{accent}\rule{2.1cm}{3pt}}\\[0.7cm]
+{\Huge\bfseries\color{school} Final Project}\\[0.25cm]
+{\Large Private School Tuition and Billing Management System}\\[1cm]
+{\large Albert Bandura School}\\[2.1cm]
+\begin{tabular}{@{}ll@{}}
+\textbf{Course:}& Databases\\
+\textbf{Project type:}& Relational Database, REST API and GUI\\
+\textbf{Technology:}& SQLite, Flask-SQLAlchemy, HTML, JavaScript\\
+\textbf{Team:}& Dilan Quinatoa -- Database Design\\
+             & Adri\'an Pic\'on -- Database Implementation and Testing\\
+\textbf{Report date:}& November 23, 2026\\
+\end{tabular}
+\vfill
+\small \textit{Academic demonstration. Generated XLSX and XML files are internal payment records, not SRI-authorized electronic invoices.}
+\end{titlepage}
+\tableofcontents\newpage
+
+\section{Project Overview}
+The purpose of this project is to design and implement a relational database system for Albert Bandura School. The school currently registers tuition payments manually, which can produce delays, duplicated information and errors. Our solution stores information about legal representatives, enrolled students, monthly payments and billing records in a SQLite database. A RESTful API connects the database to a browser-based user interface.
+
+The final implementation uses \textbf{Python, Flask, Flask-SQLAlchemy, SQLite, HTML, CSS and JavaScript}. Users can register and edit data through the web interface; payment registration creates a linked invoice record. Individual invoice files are exported in Excel (\texttt{.xlsx}) or XML (\texttt{.xml}) format. A monthly payment report can also be displayed and exported as CSV.
+
+\subsection{Scope}
+The system includes records for representatives, students, payments and invoices, CRUD endpoints, a graphical user interface and reports. It excludes payroll, grades, teacher administration and authorization of electronic tax invoices by the Ecuadorian SRI. The original database design excluded a GUI, but the user interface was added to address the final project requirements.
+
+\section{Requirements and Design Decisions}
+\begin{longtable}{p{1.2cm}p{11.8cm}}
+\toprule ID & Functional requirement \\ \midrule\endhead
+FR-01 & Register and manage legal representatives and their contact information.\\
+FR-02 & Register students and connect them to their legal representatives.\\
+FR-03 & Register monthly tuition payments associated with students.\\
+FR-04 & Create an invoice record automatically for each new payment.\\
+FR-05 & Retrieve complete invoice information using relationships among four tables.\\
+FR-06 & Allow data management through an API and a web interface.\\
+FR-07 & Export internal payment invoices as XLSX/XML and present monthly reports.\\
+\bottomrule
+\end{longtable}
+
+Data integrity is enforced through primary keys, foreign keys and unique constraints. The backend validates mandatory fields, IDs, date formats, allowed payment methods and positive amounts. In SQLite, foreign-key checking is activated for each connection. SQLite was retained because it is easy to run locally and requires no separate database server; Flask-SQLAlchemy was selected to satisfy the required API framework.
+
+\section{Database Design and Implementation}
+\subsection{Conceptual Model}
+The four entities and their cardinalities are derived from the original Database Design Specification. A representative may have many students, a student may make many tuition payments, and each recorded payment has at most one linked invoice.
+\fig{docs/original_conceptual.png}{0.96}{Conceptual model from the original project specification.}
+
+\subsection{Logical Model}
+\fig{docs/original_logico.png}{0.96}{Original relational model with keys, data types and relations.}
+
+\begin{center}
+\begin{tabular}{p{2.7cm}p{3.2cm}p{6.8cm}}\toprule
+Table & Key/relationship & Purpose\\\midrule
+\texttt{representative} & PK: \texttt{id} & Identification and contact details of the legal representative.\\
+\texttt{student} & PK: \texttt{id}; FK: \texttt{representative\_id} & Student identity, enrollment and grade.\\
+\texttt{payment} & PK: \texttt{id}; FK: \texttt{student\_id} & Month, amount, method and status of payments.\\
+\texttt{invoice} & PK: \texttt{id}; FK/unique: \texttt{payment\_id} & Invoice number, issue date and financial totals.\\\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Physical Implementation and ORM}
+The SQL script \texttt{schema.sql} creates the four tables. In \texttt{app.py}, each table is represented as a Flask-SQLAlchemy model using \texttt{db.Model}, \texttt{db.Column}, \texttt{db.ForeignKey} and uniqueness constraints. The application initializes the schema using \texttt{db.create\_all()}. This command creates missing tables but does not erase an existing database; a backup of \texttt{colegio.db} is recommended before changing versions.
+\begin{lstlisting}[language=Python]
+class Student(db.Model):
+    __tablename__ = 'student'
+    id = db.Column(db.Integer, primary_key=True)
+    representative_id = db.Column(
+        db.Integer, db.ForeignKey('representative.id'),
+        nullable=False)
+    enrollment_number = db.Column(db.String(30), unique=True)
+\end{lstlisting}
+Transactions use \texttt{db.session.add()}, \texttt{db.session.commit()} and \texttt{db.session.rollback()} where appropriate. Invoice creation occurs in the same database transaction as payment creation.
+
+\section{API Design and CRUD Operations}
+The application maintains the existing Flask endpoints so the previous \texttt{curl} examples continue to work, but now executes database operations through Flask-SQLAlchemy models and sessions.
+
+\begin{center}\small
+\begin{tabular}{p{2.7cm}p{8.9cm}}\toprule Resource & Endpoints and HTTP methods \\ \midrule
+Representatives & \texttt{GET /representatives}, \texttt{GET /representative/1}, \texttt{POST /representative}, \texttt{PUT /representative/1}, \texttt{DELETE /representative/1} \\
+Students & \texttt{GET /students}, \texttt{GET /student/1}, \texttt{POST /student}, \texttt{PUT /student/1}, \texttt{DELETE /student/1} \\
+Payments & \texttt{GET /payments}, \texttt{GET /payment/1}, \texttt{POST /payment}, \texttt{PUT /payment/1}, \texttt{DELETE /payment/1} \\
+Invoices & \texttt{GET /invoices}, \texttt{GET /invoice/1}, \texttt{POST /invoice}, \texttt{PUT /invoice/1}, \texttt{DELETE /invoice/1} \\
+Reports & \texttt{GET /invoice\_report}, \texttt{GET /invoice\_details}, \texttt{GET /reports/monthly}, \texttt{GET /reports/overview} \\
+Exports & \texttt{GET /invoice/1/xlsx}, \texttt{GET /invoice/1/xml} \\
+\bottomrule\end{tabular}\end{center}
+
+\subsection{Request and Response Examples}
+A representative can be registered through \texttt{POST /representative} with the following JSON request body:
+\begin{lstlisting}
+{"first_name":"Ana", "last_name":"Lopez",
+ "identification_number":"1723456789"}
+\end{lstlisting}
+A successful create operation returns HTTP \texttt{201} and the saved object with its \texttt{id}. GET/PUT/DELETE return HTTP \texttt{200} on success. Invalid data normally returns \texttt{400}, unauthorized write requests return \texttt{401} when a key has been configured, and unknown IDs return \texttt{404}.
+
+A complete collection for Postman is provided at \texttt{docs/Albert\_Bandura\_Postman.json}. Endpoint descriptions and sample payloads also appear in \texttt{docs/API.md}.
+
+\section{Graphical User Interface}
+The graphical interface is a responsive web page served by Flask. It was developed using HTML, CSS and JavaScript, with \texttt{fetch()} for communication with the API. The layout uses a compact left-side navigation menu, clearly labeled forms, ordinary tables and restrained colors instead of advanced visual components.
+
+\fig{docs/interfaz_preview.png}{0.93}{Visual reference of the school administration interface. The final version adds a Reports module and more CRUD actions.}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Home:} record counts and a short overview of the payment workflow.
+\item \textbf{Representatives:} create, list, search, edit and delete representatives.
+\item \textbf{Students:} create, list, search, edit and delete student records.
+\item \textbf{Payments:} create payments, view transactions, update status, and delete demo records.
+\item \textbf{Invoices:} browse, edit issue dates, delete, regenerate and download receipts.
+\item \textbf{Reports:} view monthly valid-payment counts and totals; export CSV.
+\end{itemize}
+
+For this academic demonstration, a payment or invoice can be physically deleted to show the DELETE operation. A real financial application should retain an audit trail instead of deleting accounting records.
+
+\section{Invoice Generation and Reporting}
+When the user saves a valid payment, the API inserts its data and generates a matching invoice number (for example, \texttt{FAC-1}). Both records are committed together. The invoice detail is reconstructed through a JOIN of representatives, students, payments and invoices, rather than copying the student or representative name into the invoice table.
+
+Each invoice can be downloaded as \texttt{.xlsx} or \texttt{.xml}; the Excel file is assembled as a valid Office Open XML workbook. The XML file stores the same internal billing details in a structured hierarchy. The screenshot below illustrates the exported spreadsheet.
+\fig{docs/preview_factura.png}{0.72}{Example of an internal school payment receipt exported as an Excel worksheet.}
+
+The monthly report is implemented at \texttt{GET /reports/monthly}. It groups \texttt{completed} payments by billing month and calculates the count and sum. Payments with a \texttt{voided} status are not included in collected revenue. The interface also offers a CSV download of this summary.
+
+\section{Test Cases and Results}
+\subsection{Checks executed in the preparation environment}
+The following five independent tests were executed successfully on November 23, 2026, using Python's \texttt{unittest}, SQLite and the invoice file generator:
+\begin{center}\begin{tabular}{p{1.1cm}p{9cm}p{2cm}}\toprule Test & Validation & Result\\\midrule
+T01 & SQL schema creates the four tables & PASS\\
+T02 & SQLite rejects an invalid foreign key & PASS\\
+T03 & Four-table JOIN returns the expected data & PASS\\
+T04 & XLSX ZIP/XML components are structurally valid & PASS\\
+T05 & XLSX contains the correct invoice, student and amount & PASS\\\bottomrule\end{tabular}\end{center}
+Python source compilation and JavaScript syntax checks also completed without errors.
+
+\subsection{API integration tests}
+The project contains \textbf{28 Flask API and GUI-route tests} covering CRUD, validations, payment/invoice creation, export endpoints, monthly reporting and optional API-key protection. These tests are \textbf{prepared but not marked as passed here} because the report generation environment could not install Flask or Flask-SQLAlchemy. They must be run on the student's machine using:
+\begin{lstlisting}
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+\end{lstlisting}
+After running them, the team should attach the actual terminal result, then manually confirm the navigation, form submissions and downloads in a browser. This distinction avoids reporting tests as successful before execution.
+
+\section{Security, Limitations and Improvements}
+Inputs are checked for type, required fields, permitted values, positive amounts and date format; database constraints protect relationships and unique records. The app runs on \texttt{127.0.0.1} for local use. If the environment variable \texttt{SCHOOL\_API\_KEY} is defined, POST/PUT/DELETE operations require its value in the \texttt{X-API-Key} header.
+
+This is \emph{not} a complete production login system. Future work includes student and staff accounts, password hashing, role permissions, HTTPS, migrations, stronger audit logging, backups and formal compliance with Ecuadorian electronic invoicing.
+
+\section{Repository, Documentation and Submission}
+The ZIP package includes the source code, SQL creation script, API documentation, Postman collection, test files, generated report and instructions in \texttt{README.md}. For the final submission, the team must upload it to a public GitHub repository and provide its URL.
+
+\textbf{GitHub URL (to be added by team):} \underline{\hspace{10.0cm}}
+
+Suggested demonstration: open the website, register a representative, add a linked student, record a payment, download the invoice file and show the grouped monthly report. Then run the tests and open the Postman collection to demonstrate the API endpoints.
+
+\section{Use of Generative AI}
+ChatGPT (OpenAI, GPT-6) was used to assist with checking the consistency of the database design and project requirements, reviewing the report, debugging code and preparing some implementation drafts and automated test cases. The team is responsible for understanding, running and validating the final application, correcting problems found during testing, and submitting accurate results. AI-supported work is not represented as entirely original manual programming.
+
+\section{References}
+\begin{enumerate}[leftmargin=*]
+\item Pallets. \textit{Flask Documentation}. \url{https://flask.palletsprojects.com/}
+\item Pallets. \textit{Flask-SQLAlchemy Documentation}. \url{https://flask-sqlalchemy.palletsprojects.com/}
+\item SQLite Consortium. \textit{SQLite Documentation}. \url{https://www.sqlite.org/docs.html}
+\item Postman. \textit{Postman Collection Format}. \url{https://learning.postman.com/}
+\item Project team. \textit{Database Design Specification: Private School Tuition and Billing Management System}. Original project document, 2026.
+\end{enumerate}
+
+\appendix
+\section{Simplified Data Dictionary}
+\begin{longtable}{p{2.5cm}p{3.9cm}p{2cm}p{4.2cm}}\toprule
+Table & Field & Type & Purpose\\\midrule\endhead
+representative & id & INTEGER PK & Unique representative ID\\
+representative & first\_name, last\_name & TEXT & Names\\
+representative & identification\_number & TEXT UNIQUE & Document number\\
+representative & phone, email, address & TEXT & Contact information\\
+student & id, representative\_id & INTEGER PK/FK & Student and representative IDs\\
+student & enrollment\_number & TEXT UNIQUE & Enrollment code\\
+student & first\_name, last\_name, grade\_level & TEXT & Student profile\\
+student & enrollment\_status & TEXT & Current enrollment state\\
+payment & id, student\_id & INTEGER PK/FK & Payment and student IDs\\
+payment & billing\_month, payment\_date & TEXT & Month and date\\
+payment & amount & REAL & Monthly tuition amount\\
+payment & payment\_method, status & TEXT & Method and payment state\\
+invoice & id, payment\_id & INTEGER PK/FK & Invoice and unique payment IDs\\
+invoice & invoice\_number, issue\_date & TEXT & Billing document details\\
+invoice & subtotal, tax, total & REAL & Monetary amounts\\\bottomrule
+\end{longtable}
+\section{Naming Conventions}
+Tables use singular lowercase English nouns, such as \texttt{student} and \texttt{invoice}. Columns use lowercase \texttt{snake\_case}, such as \texttt{first\_name}. Primary keys are named \texttt{id}; foreign keys follow \texttt{referenced\_entity\_id} (e.g., \texttt{student\_id}).
+\end{document}

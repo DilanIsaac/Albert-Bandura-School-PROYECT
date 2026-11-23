@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+instance/
+colegio.db
+*.db-journal
+*.db-shm
+*.db-wal
+.env
+*.log
+*.aux
+*.out
+*.toc
