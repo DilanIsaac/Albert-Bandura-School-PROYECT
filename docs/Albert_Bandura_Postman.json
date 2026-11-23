@@ -1,0 +1,649 @@
+{
+  "info": {
+    "name": "Albert Bandura School - API Final",
+    "description": "Importar en Postman. Ejecutar python app.py localmente y usar variables baseUrl y apiKey.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /representatives",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/representatives",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "representatives"
+          ]
+        },
+        "description": "Listar registros"
+      }
+    },
+    {
+      "name": "GET /representative/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/representative/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "representative",
+            "1"
+          ]
+        },
+        "description": "Consultar por ID"
+      }
+    },
+    {
+      "name": "POST /representative",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/representative",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "representative"
+          ]
+        },
+        "description": "Crear registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"first_name\": \"Ana\",\n  \"last_name\": \"Lopez\",\n  \"identification_number\": \"1723456789\",\n  \"phone\": \"0991112222\",\n  \"email\": \"ana@ejemplo.com\",\n  \"address\": \"Quito\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "PUT /representative/1",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/representative/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "representative",
+            "1"
+          ]
+        },
+        "description": "Modificar registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"first_name\": \"Ana\",\n  \"last_name\": \"Lopez\",\n  \"identification_number\": \"1723456789\",\n  \"phone\": \"0991112222\",\n  \"email\": \"ana@ejemplo.com\",\n  \"address\": \"Quito\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "DELETE /representative/1",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/representative/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "representative",
+            "1"
+          ]
+        },
+        "description": "Eliminar registro"
+      }
+    },
+    {
+      "name": "GET /students",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/students",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "students"
+          ]
+        },
+        "description": "Listar registros"
+      }
+    },
+    {
+      "name": "GET /student/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/student/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "student",
+            "1"
+          ]
+        },
+        "description": "Consultar por ID"
+      }
+    },
+    {
+      "name": "POST /student",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/student",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "student"
+          ]
+        },
+        "description": "Crear registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"representative_id\": 1,\n  \"enrollment_number\": \"EST-001\",\n  \"first_name\": \"Pedro\",\n  \"last_name\": \"Lopez\",\n  \"grade_level\": \"Primero\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "PUT /student/1",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/student/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "student",
+            "1"
+          ]
+        },
+        "description": "Modificar registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"representative_id\": 1,\n  \"enrollment_number\": \"EST-001\",\n  \"first_name\": \"Pedro\",\n  \"last_name\": \"Lopez\",\n  \"grade_level\": \"Primero\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "DELETE /student/1",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/student/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "student",
+            "1"
+          ]
+        },
+        "description": "Eliminar registro"
+      }
+    },
+    {
+      "name": "GET /payments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/payments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payments"
+          ]
+        },
+        "description": "Listar registros"
+      }
+    },
+    {
+      "name": "GET /payment/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/payment/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment",
+            "1"
+          ]
+        },
+        "description": "Consultar por ID"
+      }
+    },
+    {
+      "name": "POST /payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payment",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment"
+          ]
+        },
+        "description": "Crear registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"student_id\": 1,\n  \"billing_month\": \"2026-11-01\",\n  \"amount\": 60,\n  \"payment_method\": \"cash\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "PUT /payment/1",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payment/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment",
+            "1"
+          ]
+        },
+        "description": "Modificar registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"voided\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "DELETE /payment/1",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/payment/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "payment",
+            "1"
+          ]
+        },
+        "description": "Eliminar registro"
+      }
+    },
+    {
+      "name": "GET /invoices",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/invoices",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoices"
+          ]
+        },
+        "description": "Listar registros"
+      }
+    },
+    {
+      "name": "GET /invoice/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/invoice/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice",
+            "1"
+          ]
+        },
+        "description": "Consultar por ID"
+      }
+    },
+    {
+      "name": "POST /invoice",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/invoice",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice"
+          ]
+        },
+        "description": "Crear registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"payment_id\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "PUT /invoice/1",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/invoice/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice",
+            "1"
+          ]
+        },
+        "description": "Modificar registro",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"issue_date\": \"2026-11-23\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "DELETE /invoice/1",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-API-Key",
+            "value": "{{apiKey}}",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/invoice/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice",
+            "1"
+          ]
+        },
+        "description": "Eliminar registro"
+      }
+    },
+    {
+      "name": "GET /invoice_details",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/invoice_details",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice_details"
+          ]
+        },
+        "description": "Lista detallada para la GUI"
+      }
+    },
+    {
+      "name": "GET /invoice_report",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/invoice_report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice_report"
+          ]
+        },
+        "description": "JOIN de cuatro tablas"
+      }
+    },
+    {
+      "name": "GET /reports/monthly",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/reports/monthly",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reports",
+            "monthly"
+          ]
+        },
+        "description": "Recaudacion mensual sin pagos anulados"
+      }
+    },
+    {
+      "name": "GET /reports/overview",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/reports/overview",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reports",
+            "overview"
+          ]
+        },
+        "description": "Contadores globales"
+      }
+    },
+    {
+      "name": "GET /invoice/1/xlsx",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/invoice/1/xlsx",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice",
+            "1",
+            "xlsx"
+          ]
+        },
+        "description": "Descarga una factura Excel"
+      }
+    },
+    {
+      "name": "GET /invoice/1/xml",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/invoice/1/xml",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "invoice",
+            "1",
+            "xml"
+          ]
+        },
+        "description": "Descarga una factura XML"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:7002"
+    },
+    {
+      "key": "apiKey",
+      "value": ""
+    }
+  ]
+}

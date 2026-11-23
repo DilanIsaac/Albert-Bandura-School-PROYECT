@@ -1,0 +1,199 @@
+{
+  "project": "Albert Bandura School",
+  "endpoints": [
+    {
+      "method": "GET",
+      "url": "/representatives",
+      "detail": "Listar registros",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/representative/1",
+      "detail": "Consultar por ID",
+      "json": null
+    },
+    {
+      "method": "POST",
+      "url": "/representative",
+      "detail": "Crear registro",
+      "json": {
+        "first_name": "Ana",
+        "last_name": "Lopez",
+        "identification_number": "1723456789",
+        "phone": "0991112222",
+        "email": "ana@ejemplo.com",
+        "address": "Quito"
+      }
+    },
+    {
+      "method": "PUT",
+      "url": "/representative/1",
+      "detail": "Modificar registro",
+      "json": {
+        "first_name": "Ana",
+        "last_name": "Lopez",
+        "identification_number": "1723456789",
+        "phone": "0991112222",
+        "email": "ana@ejemplo.com",
+        "address": "Quito"
+      }
+    },
+    {
+      "method": "DELETE",
+      "url": "/representative/1",
+      "detail": "Eliminar registro",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/students",
+      "detail": "Listar registros",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/student/1",
+      "detail": "Consultar por ID",
+      "json": null
+    },
+    {
+      "method": "POST",
+      "url": "/student",
+      "detail": "Crear registro",
+      "json": {
+        "representative_id": 1,
+        "enrollment_number": "EST-001",
+        "first_name": "Pedro",
+        "last_name": "Lopez",
+        "grade_level": "Primero"
+      }
+    },
+    {
+      "method": "PUT",
+      "url": "/student/1",
+      "detail": "Modificar registro",
+      "json": {
+        "representative_id": 1,
+        "enrollment_number": "EST-001",
+        "first_name": "Pedro",
+        "last_name": "Lopez",
+        "grade_level": "Primero"
+      }
+    },
+    {
+      "method": "DELETE",
+      "url": "/student/1",
+      "detail": "Eliminar registro",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/payments",
+      "detail": "Listar registros",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/payment/1",
+      "detail": "Consultar por ID",
+      "json": null
+    },
+    {
+      "method": "POST",
+      "url": "/payment",
+      "detail": "Crear registro",
+      "json": {
+        "student_id": 1,
+        "billing_month": "2026-11-01",
+        "amount": 60,
+        "payment_method": "cash"
+      }
+    },
+    {
+      "method": "PUT",
+      "url": "/payment/1",
+      "detail": "Modificar registro",
+      "json": {
+        "status": "voided"
+      }
+    },
+    {
+      "method": "DELETE",
+      "url": "/payment/1",
+      "detail": "Eliminar registro",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/invoices",
+      "detail": "Listar registros",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/invoice/1",
+      "detail": "Consultar por ID",
+      "json": null
+    },
+    {
+      "method": "POST",
+      "url": "/invoice",
+      "detail": "Crear registro",
+      "json": {
+        "payment_id": 1
+      }
+    },
+    {
+      "method": "PUT",
+      "url": "/invoice/1",
+      "detail": "Modificar registro",
+      "json": {
+        "issue_date": "2026-11-23"
+      }
+    },
+    {
+      "method": "DELETE",
+      "url": "/invoice/1",
+      "detail": "Eliminar registro",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/invoice_details",
+      "detail": "Lista detallada para la GUI",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/invoice_report",
+      "detail": "JOIN de cuatro tablas",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/reports/monthly",
+      "detail": "Recaudacion mensual sin pagos anulados",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/reports/overview",
+      "detail": "Contadores globales",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/invoice/1/xlsx",
+      "detail": "Descarga una factura Excel",
+      "json": null
+    },
+    {
+      "method": "GET",
+      "url": "/invoice/1/xml",
+      "detail": "Descarga una factura XML",
+      "json": null
+    }
+  ],
+  "authentication": "Optional SCHOOL_API_KEY + X-API-Key for write operations"
+}
